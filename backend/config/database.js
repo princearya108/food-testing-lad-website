@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     // Use MongoDB Atlas in production, local MongoDB in development
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ftl';
+    const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://princeaarya10008:FTLcutm10008@ftl.njzlo8f.mongodb.net/food_testing_lab';
     
     const conn = await mongoose.connect(mongoURI, {
       useNewUrlParser: true,

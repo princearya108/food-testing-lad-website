@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import About from './pages/About';
 import Services from './pages/Services';
@@ -25,6 +26,7 @@ const AppContent = () => {
 
   return (
     <div className="App min-h-screen bg-gray-50">
+      <ScrollToTop />
       {!isAdminRoute && <Navbar />}
       <main>
         <Routes>

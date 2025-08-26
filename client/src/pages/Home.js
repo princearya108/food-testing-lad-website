@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from '../api/config';
 import { 
   FaFlask, 
   FaMicroscope, 
@@ -72,7 +72,7 @@ const Home = () => {
     setContactLoading(true);
     
     try {
-      const response = await axios.post('/api/contact', contactForm);
+      const response = await api.post('/api/contact', contactForm);
       
       if (response.data.success) {
         toast.success('Message sent successfully! We will get back to you soon.');

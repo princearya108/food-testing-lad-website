@@ -80,16 +80,16 @@ const AdminLogin = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 flex items-center justify-center p-4">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 bg-opacity-10 rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400 bg-opacity-10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '-3s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-400 bg-opacity-10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '-1.5s' }}></div>
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400 bg-opacity-10 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400 bg-opacity-10 rounded-full animate-pulse" style={{ animationDelay: '-3s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-400 bg-opacity-10 rounded-full animate-pulse" style={{ animationDelay: '-1.5s' }}></div>
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="relative bg-white bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 md:p-12 w-full max-w-md shadow-2xl border border-white border-opacity-20"
+        className="relative bg-white bg-opacity-90 rounded-3xl p-8 md:p-12 w-full max-w-md shadow-2xl border border-gray-200"
       >
         {/* Header */}
         <div className="text-center mb-8">
