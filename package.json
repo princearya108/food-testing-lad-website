@@ -1,0 +1,39 @@
+{
+  "name": "food-testing-lab-website",
+  "version": "1.0.0",
+  "description": "Gram Tarang Food Testing Laboratory Website",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node backend/server.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "install-server": "npm install",
+    "install-all": "npm run install-server && npm run install-client",
+    "heroku-postbuild": "npm run install-client && npm run build",
+    "create-admin": "node backend/scripts/createAdmin.js",
+    "create-blogs": "node backend/scripts/createDefaultBlogs.js",
+    "create-team": "node backend/scripts/createDefaultTeam.js",
+    "create-equipment": "node backend/scripts/createDefaultEquipment.js"
+  },
+  "keywords": ["food-testing", "laboratory", "website", "MERN"],
+  "author": "GTFTL",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "path": "^0.12.7",
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  }
+}
