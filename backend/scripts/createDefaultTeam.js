@@ -3,7 +3,9 @@ const Team = require('../models/Team');
 const Admin = require('../models/Admin');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/ftl', {
+const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://princeaarya10008:FTLcutm%4010008@ftl.njzlo8f.mongodb.net/food_testing_lab?retryWrites=true&w=majority';
+
+mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

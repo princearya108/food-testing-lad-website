@@ -15,6 +15,14 @@ const serviceRequestRoutes = require('./routes/serviceRequest');
 const teamRoutes = require('./routes/team');
 const equipmentRoutes = require('./routes/equipment');
 
+// New feature routes
+const pageRoutes = require('./routes/pages');
+const internshipManagementRoutes = require('./routes/internships');
+const serviceManagementRoutes = require('./routes/services');
+
+// AI feature routes
+const aiRoutes = require('./routes/ai');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -56,13 +64,27 @@ app.use('/api/service-request', serviceRequestRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/equipment', equipmentRoutes);
 
+// New feature routes
+app.use('/api/pages', pageRoutes);
+app.use('/api/internships', internshipManagementRoutes);
+app.use('/api/services', serviceManagementRoutes);
+
+// AI feature routes
+app.use('/api/ai', aiRoutes);
+
 // Admin routes
+app.use('/api/admin/auth', authRoutes);
 app.use('/api/admin/contacts', contactRoutes);
 app.use('/api/admin/internships', internshipRoutes);
 app.use('/api/admin/blogs', blogRoutes);
 app.use('/api/admin/service-requests', serviceRequestRoutes);
 app.use('/api/admin/team', teamRoutes);
 app.use('/api/admin/equipment', equipmentRoutes);
+
+// New admin feature routes  
+app.use('/api/admin/pages', pageRoutes);
+app.use('/api/admin/internships', internshipManagementRoutes);
+app.use('/api/admin/services', serviceManagementRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -4,7 +4,9 @@ const Admin = require('../models/Admin');
 const createDefaultAdmin = async () => {
   try {
     // Connect to MongoDB
-    await mongoose.connect('mongodb://localhost:27017/ftl', {
+    const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://princeaarya10008:FTLcutm%4010008@ftl.njzlo8f.mongodb.net/food_testing_lab?retryWrites=true&w=majority';
+    
+    await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });

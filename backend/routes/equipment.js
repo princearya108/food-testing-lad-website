@@ -249,8 +249,8 @@ router.post('/admin/create', authenticateAdmin, upload.fields([
       category,
       operatingStatus: operatingStatus || 'Operational',
       displayOrder: parseInt(displayOrder) || 0,
-      isPublicDisplay: isPublicDisplay !== 'false',
-      featured: featured === 'true'
+      isPublicDisplay: isPublicDisplay === 'true' || isPublicDisplay === true,
+      featured: featured === 'true' || featured === true
     };
 
     // Add optional fields

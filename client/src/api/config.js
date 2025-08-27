@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 // API Base URL Configuration
+// For now, we'll use the same domain with /api routes on Vercel
 const API_BASE_URL = process.env.REACT_APP_API_URL || 
   (process.env.NODE_ENV === 'production' 
-    ? 'https://food-testing-lab-api.railway.app' 
+    ? window.location.origin  // Use same domain for API calls
     : 'http://localhost:5000');
 
 // Create axios instance with base configuration

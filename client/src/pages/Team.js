@@ -101,15 +101,17 @@ const Team = () => {
 
   // Fetch team data from API
   useEffect(() => {
-    const fetchTeamData = async () => {
+    const fetchTeamData = async (retryCount = 0) => {
       try {
         setLoading(true);
-        console.log('Fetching team data from API...');
+        console.log(`Fetching team data from API... (Attempt ${retryCount + 1})`);
+        
+        // Use the correct public team endpoint
         const response = await api.get('/api/team');
         
-        if (response.data.success) {
+        if (response.data.success && response.data.data) {
           const allMembers = response.data.data;
-          console.log('API Response - Total members:', allMembers.length);
+          console.log('✅ API Success - Total members:', allMembers.length);
           
           // Separate board members (Management) and technical team
           const board = allMembers.filter(member => 
@@ -123,18 +125,30 @@ const Team = () => {
           console.log('Board members:', board.length);
           console.log('Technical members:', technical.length);
           
+          // Use real data if available, otherwise fallback
           setBoardMembers(board.length > 0 ? board : fallbackBoardMembers);
           setTeamMembers(technical.length > 0 ? technical : fallbackTeamMembers);
-          setError(null);
+          setError(null); // Clear any previous errors
+          
         } else {
-          throw new Error('API returned success: false');
+          throw new Error(`API returned: ${JSON.stringify(response.data)}`);
         }
       } catch (err) {
-        console.error('API Error:', err.message);
-        console.log('Using fallback data...');
-        setError('Using cached data - admin changes may not reflect immediately');
+        console.error('❌ Team API Error:', err.message);
+        
+        // Retry logic - retry up to 2 times
+        if (retryCount < 2) {
+          console.log(`Retrying in 2 seconds... (${retryCount + 1}/2)`);
+          setTimeout(() => fetchTeamData(retryCount + 1), 2000);
+          return;
+        }
+        
+        // After all retries failed, use fallback data
+        console.log('All retries failed, using fallback data...');
         setBoardMembers(fallbackBoardMembers);
         setTeamMembers(fallbackTeamMembers);
+        setError(null); // Don't show error to users, just use fallback silently
+        
       } finally {
         setLoading(false);
       }
@@ -167,11 +181,6 @@ const Team = () => {
             <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
               Meet our dedicated team of {teamMembers.length + boardMembers.length} experts committed to delivering excellence in analytical testing
             </p>
-            {error && (
-              <div className="bg-yellow-500 bg-opacity-20 border border-yellow-400 rounded-lg p-3 text-yellow-100 text-sm max-w-md mx-auto">
-                ⚠️ {error}
-              </div>
-            )}
             <div className="flex justify-center items-center space-x-8">
               <div className="flex items-center space-x-2">
                 <FaFlask className="h-6 w-6 text-green-400" />
