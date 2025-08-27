@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+import api from '../api/config';
 import { 
   FaUser, 
   FaLock, 
@@ -28,9 +28,7 @@ const AdminLogin = () => {
     const token = localStorage.getItem('adminToken');
     if (token) {
       // Verify token validity
-      axios.get('/api/auth/verify', {
-        headers: { Authorization: `Bearer ${token}` }
-      }).then(() => {
+      api.get('/api/auth/verify').then(() => {
         navigate('/admin/dashboard');
       }).catch(() => {
         localStorage.removeItem('adminToken');
@@ -52,7 +50,7 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/auth/login', formData);
+      const response = await api.post('/api/admin/auth/login', formData);
       
       if (response.data.success) {
         const { admin, token } = response.data.data;

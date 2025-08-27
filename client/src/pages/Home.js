@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'react-toastify';
 import api from '../api/config';
+import ChatBot from '../components/AIChat/ChatBot';
 import { 
   FaFlask, 
   FaMicroscope, 
@@ -824,6 +825,8 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
+      {/* AI ChatBot */}
+      <ChatBot />
     </div>
   );
 };

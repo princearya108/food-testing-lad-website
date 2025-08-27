@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import api from '../api/config';
+import { API_BASE_URL } from '../api/config';
 import { 
   FaFlask, 
   FaMicroscope, 
@@ -18,303 +20,133 @@ const Equipment = () => {
   const [equipmentRef, equipmentInView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [equipment, setEquipment] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const categories = [
     { id: 'all', name: 'All Equipment', icon: FaCogs },
-    { id: 'chromatography', name: 'Chromatography', icon: FaChartLine },
-    { id: 'spectroscopy', name: 'Spectroscopy', icon: FaAtom },
-    { id: 'microbiology', name: 'Microbiology', icon: FaMicroscope },
-    { id: 'analysis', name: 'Analysis', icon: FaFlask }
+    { id: 'Chromatography', name: 'Chromatography', icon: FaChartLine },
+    { id: 'Spectroscopy', name: 'Spectroscopy', icon: FaAtom },
+    { id: 'Microbiology', name: 'Microbiology', icon: FaMicroscope },
+    { id: 'Cell Culture', name: 'Cell Culture', icon: FaMicroscope },
+    { id: 'Mass Spectrometry', name: 'Mass Spectrometry', icon: FaAtom },
+    { id: 'General Laboratory', name: 'General Lab', icon: FaFlask }
   ];
 
-  const equipment = [
-    {
-      id: 1,
-      name: 'LC-MS/MS',
-      fullName: 'Liquid Chromatography–Mass Spectrometry',
-      category: 'chromatography',
-      image: '/images/IMG_20250821_132458896.jpg',
-      description: 'Separates complex food/pharma matrices by LC and detects compounds by tandem MS (MRM) for high specificity and sub-ppb sensitivity. Ideal for multi-residue pesticides, mycotoxins, veterinary drugs, and polar contaminants.',
-      applications: [
-        'Pesticide residue analysis',
-        'Drug metabolite identification',
-        'Food contaminant detection',
-        'Pharmaceutical quality control'
-      ],
-      specifications: {
-        'Detection Limit': 'pg/mL level',
-        'Sample Volume': '1-100 μL',
-        'Analysis Time': '10-30 minutes',
-        'Accuracy': '±2%'
-      },
-      icon: FaChartLine,
-      color: 'bg-blue-500'
-    },
-    {
-      id: 2,
-      name: 'GC-MS/MS',
-      fullName: 'Gas Chromatography–Mass Spectrometry',
-      category: 'chromatography',
-      image: '/images/IMG_20250821_132516623.jpg',
-      description: 'Analyzes volatile/semi-volatile contaminants with triple-quadrupole MS for selective, sensitive quantification. Used for pesticide residues, PAHs, residual solvents, flavor/fragrance profiling, and environmental volatiles.',
-      applications: [
-        'VOC analysis',
-        'Essential oil composition',
-        'Environmental contaminants',
-        'Flavor and fragrance analysis'
-      ],
-      specifications: {
-        'Temperature Range': '35-450°C',
-        'Injection Volume': '0.1-2.0 μL',
-        'Carrier Gas': 'Helium/Nitrogen',
-        'Detection': 'Full scan & SIM modes'
-      },
-      icon: FaChartLine,
-      color: 'bg-green-500'
-    },
-    {
-      id: 3,
-      name: 'ICP-MS',
-      fullName: 'Inductively Coupled Plasma–Mass Spectrometry',
-      category: 'spectroscopy',
-      image: '/images/IMG_20250821_132537634.jpg',
-      description: 'Quantifies trace/heavy metals at ppt–ppb levels after plasma ionization. Supports compliance testing for As, Cd, Pb, Hg and broad elemental panels in foods, water, pharma inputs, and forensic samples.',
-      applications: [
-        'Heavy metal analysis',
-        'Trace element determination',
-        'Water quality testing',
-        'Food safety analysis'
-      ],
-      specifications: {
-        'Detection Range': 'ppb to % levels',
-        'Elements': '70+ elements',
-        'Sample Volume': '1-10 mL',
-        'Precision': '<3% RSD'
-      },
-      icon: FaAtom,
-      color: 'bg-purple-500'
-    },
-    {
-      id: 4,
-      name: 'HPLC',
-      fullName: 'High-Performance Liquid Chromatography',
-      category: 'chromatography',
-      image: '/images/IMG_20250821_132559084.jpg',
-      description: 'Chromatographic separation with UV/FLD/RI detection for non-volatile analytes. Common for preservatives, colors, amino acids, vitamins, sugars, phenolics, and stability/assay work.',
-      applications: [
-        'Vitamin analysis',
-        'Amino acid profiling',
-        'Pharmaceutical analysis',
-        'Food additive determination'
-      ],
-      specifications: {
-        'Flow Rate': '0.1-10 mL/min',
-        'Pressure': 'Up to 400 bar',
-        'Temperature': '4-80°C',
-        'Detection': 'UV/Vis, Fluorescence'
-      },
-      icon: FaChartLine,
-      color: 'bg-cyan-500'
-    },
-    {
-      id: 5,
-      name: 'FTIR',
-      fullName: 'Fourier Transform Infrared Spectroscopy',
-      category: 'spectroscopy',
-      image: '/images/IMG_20250821_132615414.jpg',
-      description: 'Rapid fingerprinting of functional groups using ATR or transmission modes. Useful for identity testing, detection of adulteration in oils/fats, polymer/packaging checks, and verification against reference spectra.',
-      applications: [
-        'Material identification',
-        'Purity assessment',
-        'Contamination analysis',
-        'Quality control'
-      ],
-      specifications: {
-        'Wavelength Range': '400-4000 cm⁻¹',
-        'Resolution': '0.5 cm⁻¹',
-        'Sample Types': 'Solid, liquid, gas',
-        'Scan Time': '1-10 seconds'
-      },
-      icon: FaAtom,
-      color: 'bg-orange-500'
-    },
-    {
-      id: 6,
-      name: 'UV-Vis Spectrophotometer',
-      fullName: 'Ultraviolet-Visible Spectrophotometer',
-      category: 'spectroscopy',
-      image: '/images/IMG_20250821_132650232.jpg',
-      description: 'Absorbance-based quantification for routine assays (colorimetric nutrients, nitrates, phosphates, phenolics, protein by Bradford/Lowry, etc.). Supports water quality and formulation analysis.',
-      applications: [
-        'Concentration determination',
-        'Protein analysis',
-        'DNA/RNA quantification',
-        'Color measurement'
-      ],
-      specifications: {
-        'Wavelength Range': '190-1100 nm',
-        'Bandwidth': '0.1-5.0 nm',
-        'Accuracy': '±0.3 nm',
-        'Stray Light': '<0.03%'
-      },
-      icon: FaAtom,
-      color: 'bg-indigo-500'
-    },
-    {
-      id: 7,
-      name: 'Bomb Calorimeter',
-      fullName: 'Bomb Calorimeter',
-      category: 'analysis',
-      image: '/images/IMG_20250821_132700981.jpg',
-      description: 'Measures gross calorific value (energy) of foods, feeds, and biomass to support nutritional labeling and R&D on product reformulation.',
-      applications: [
-        'Food energy analysis',
-        'Fuel value determination',
-        'Nutritional labeling',
-        'Quality assessment'
-      ],
-      specifications: {
-        'Temperature Range': '15-35°C',
-        'Pressure': 'Up to 40 atm',
-        'Precision': '±0.1%',
-        'Sample Weight': '0.5-1.5 g'
-      },
-      icon: FaFlask,
-      color: 'bg-red-500'
-    },
-    {
-      id: 8,
-      name: 'Protein Analyzer',
-      fullName: 'Automated Protein Analyzer',
-      category: 'analysis',
-      image: '/images/IMG_20250821_132720113.jpg',
-      description: 'Automated Kjeldahl/Dumas nitrogen determination converted to protein content. Enables accurate protein claims and raw-material QC.',
-      applications: [
-        'Food protein analysis',
-        'Feed quality testing',
-        'Nutritional analysis',
-        'Quality control'
-      ],
-      specifications: {
-        'Method': 'Kjeldahl/Dumas',
-        'Range': '0.1-40% protein',
-        'Accuracy': '±0.5%',
-        'Sample Size': '0.1-2.0 g'
-      },
-      icon: FaFlask,
-      color: 'bg-teal-500'
-    },
-    {
-      id: 9,
-      name: 'Fat Analyzer',
-      fullName: 'Automated Fat Analyzer',
-      category: 'analysis',
-      image: '/images/IMG_20250821_132737052.jpg',
-      description: 'Solvent-extraction or rapid techniques to determine total fat/oil in foods and ingredients. Supports label claims, process control, and adulteration checks.',
-      applications: [
-        'Fat content analysis',
-        'Oil extraction',
-        'Nutritional labeling',
-        'Quality assessment'
-      ],
-      specifications: {
-        'Method': 'Soxhlet extraction',
-        'Range': '0.1-50% fat',
-        'Extraction Time': '2-8 hours',
-        'Sample Capacity': '6-12 samples'
-      },
-      icon: FaFlask,
-      color: 'bg-yellow-500'
-    },
-    {
-      id: 10,
-      name: 'Fiber Analyzer',
-      fullName: 'Automated Fiber Analyzer',
-      category: 'analysis',
-      image: '/images/IMG_20250821_132800027.jpg',
-      description: 'Determines crude fiber (and, where applicable, ADF/NDF) via standardized digestion workflows. Useful for cereals, pulses, feeds, and dietary formulations.',
-      applications: [
-        'Dietary fiber analysis',
-        'Feed analysis',
-        'Nutritional labeling',
-        'Research studies'
-      ],
-      specifications: {
-        'Method': 'Enzymatic-gravimetric',
-        'Range': '0.1-95% fiber',
-        'Precision': '±2%',
-        'Analysis Time': '4-6 hours'
-      },
-      icon: FaFlask,
-      color: 'bg-lime-500'
-    },
-    {
-      id: 11,
-      name: 'Microbiology Laboratory',
-      fullName: 'Complete Microbiology Facility',
-      category: 'microbiology',
-      image: '/images/IMG_20250821_132831498.jpg',
-      description: 'Controlled sterile labs for enumeration and pathogen detection per IS/FSSAI/ISO methods—TVC, coliforms/E. coli, Salmonella, yeast & mold, and hygiene/environmental monitoring—using incubators, autoclaves, biosafety cabinets, and validated media.',
-      applications: [
-        'Pathogen detection',
-        'Contamination testing',
-        'Water quality analysis',
-        'Food safety testing'
-      ],
-      specifications: {
-        'Biosafety Level': 'BSL-1/BSL-2',
-        'Incubation': '4-65°C',
-        'Atmosphere': 'Aerobic/Anaerobic',
-        'Capacity': '100+ samples/day'
-      },
-      icon: FaMicroscope,
-      color: 'bg-emerald-500'
-    },
-    {
-      id: 12,
-      name: 'Cell Culture Facility',
-      fullName: 'Animal Cell Culture Laboratory',
-      category: 'microbiology',
-      image: '/images/IMG_20250821_132848228.jpg',
-      description: 'CO₂ incubators, biosafety cabinets, and microscopy for sterile cell-based assays. Supports in-vitro toxicity screening, bioactivity evaluation of nutraceutical extracts, and mechanism studies under SOP-driven conditions.',
-      applications: [
-        'Cell line maintenance',
-        'Cytotoxicity assays',
-        'Drug screening',
-        'Research applications'
-      ],
-      specifications: {
-        'CO₂ Incubators': '5% CO₂, 37°C',
-        'Sterility': 'HEPA filtered',
-        'Monitoring': '24/7 automated',
-        'Capacity': 'Multiple cell lines'
-      },
-      icon: FaMicroscope,
-      color: 'bg-violet-500'
-    },
-    {
-      id: 13,
-      name: 'In Silico Analysis',
-      fullName: 'Computational Biology & Bioinformatics',
-      category: 'analysis',
-      image: '/images/IMG_20250821_133004301.jpg',
-      description: 'Computational pipelines for method development and risk assessment: cheminformatics/QSAR, molecular docking, ADME-tox prediction, multivariate statistics, and data visualization to complement wet-lab results.',
-      applications: [
-        'Molecular docking studies',
-        'QSAR modeling',
-        'ADME-tox prediction',
-        'Data visualization'
-      ],
-      specifications: {
-        'Software Suite': 'ChemDraw, MOE, R, Python',
-        'Computing Power': 'High-performance workstations',
-        'Analysis Types': 'QSAR, Docking, Statistics',
-        'Output Formats': 'Reports, Visualizations'
-      },
-      icon: FaFlask,
-      color: 'bg-indigo-500'
+  // Fetch equipment from API
+  useEffect(() => {
+    fetchEquipment();
+  }, []);
+
+  const fetchEquipment = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await api.get('/api/equipment');
+      console.log('Equipment API response:', response.data);
+      
+      if (response.data.success) {
+        const equipmentData = response.data.data.map(item => ({
+          id: item._id,
+          name: item.name,
+          fullName: item.model ? `${item.name} - ${item.model}` : item.name,
+          category: item.category,
+          image: item.equipmentImages && item.equipmentImages.length > 0 
+            ? `${API_BASE_URL}${item.equipmentImages[0]}` 
+            : getDefaultEquipmentImage(item.name),
+          description: item.description || 'No description available',
+          applications: item.applications ? item.applications.split('\n').filter(app => app.trim()) : [],
+          specifications: {
+            'Model': item.model || 'N/A',
+            'Manufacturer': item.manufacturer || 'N/A',
+            'Serial Number': item.serialNumber || 'N/A',
+            'Status': item.operatingStatus || 'Unknown'
+          },
+          icon: getCategoryIcon(item.category),
+          color: getCategoryColor(item.category),
+          featured: item.featured,
+          operatingStatus: item.operatingStatus
+        }));
+        
+        setEquipment(equipmentData);
+      }
+    } catch (error) {
+      console.error('Error fetching equipment:', error);
+      setError('Failed to load equipment data');
+      
+      // Fallback to minimal static data on error
+      setEquipment([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case 'Chromatography':
+      case 'Mass Spectrometry':
+        return FaChartLine;
+      case 'Spectroscopy':
+        return FaAtom;
+      case 'Microbiology':
+      case 'Cell Culture':
+        return FaMicroscope;
+      default:
+        return FaFlask;
+    }
+  };
+
+  const getCategoryColor = (category) => {
+    switch (category) {
+      case 'Chromatography':
+        return 'bg-blue-500';
+      case 'Spectroscopy':
+        return 'bg-purple-500';
+      case 'Mass Spectrometry':
+        return 'bg-green-500';
+      case 'Microbiology':
+        return 'bg-emerald-500';
+      case 'Cell Culture':
+        return 'bg-violet-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const getDefaultEquipmentImage = (equipmentName) => {
+    const name = equipmentName.toLowerCase();
+    if (name.includes('lc-ms') || name.includes('lcms')) {
+      return '/images/IMG_20250821_132458896.jpg';
+    } else if (name.includes('gc-ms') || name.includes('gcms')) {
+      return '/images/IMG_20250821_132516623.jpg';
+    } else if (name.includes('icp-ms') || name.includes('icpms')) {
+      return '/images/IMG_20250821_132537634.jpg';
+    } else if (name.includes('hplc')) {
+      return '/images/IMG_20250821_132559084.jpg';
+    } else if (name.includes('ftir')) {
+      return '/images/IMG_20250821_132615414.jpg';
+    } else if (name.includes('uv') || name.includes('spectrophotometer')) {
+      return '/images/IMG_20250821_132650232.jpg';
+    } else if (name.includes('calorimeter')) {
+      return '/images/IMG_20250821_132700981.jpg';
+    } else if (name.includes('protein')) {
+      return '/images/IMG_20250821_132720113.jpg';
+    } else if (name.includes('fat')) {
+      return '/images/IMG_20250821_132737052.jpg';
+    } else if (name.includes('fiber')) {
+      return '/images/IMG_20250821_132800027.jpg';
+    } else if (name.includes('microbiology')) {
+      return '/images/IMG_20250821_132831498.jpg';
+    } else if (name.includes('cell culture')) {
+      return '/images/IMG_20250821_132848228.jpg';
+    } else if (name.includes('silico') || name.includes('computational')) {
+      return '/images/IMG_20250821_133004301.jpg';
+    } else {
+      return '/images/default-equipment.jpg';
+    }
+  };
 
   const filteredEquipment = selectedCategory === 'all' 
     ? equipment 
@@ -350,7 +182,9 @@ const Equipment = () => {
             <div className="flex justify-center items-center space-x-8">
               <div className="flex items-center space-x-2">
                 <FaCogs className="h-6 w-6 text-green-400" />
-                <span className="text-sm font-medium">13+ Instruments</span>
+                <span className="text-sm font-medium">
+                  {loading ? 'Loading...' : `${equipment.length} Instruments`}
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <FaAtom className="h-6 w-6 text-yellow-400" />
@@ -400,9 +234,31 @@ const Equipment = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <AnimatePresence mode="wait">
-              {filteredEquipment.map((item, index) => (
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <span className="ml-4 text-lg text-gray-600">Loading equipment...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+              <div className="text-red-600 text-lg mb-4">{error}</div>
+              <button
+                onClick={fetchEquipment}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          ) : filteredEquipment.length === 0 ? (
+            <div className="text-center py-20">
+              <FaFlask className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Equipment Found</h3>
+              <p className="text-gray-500">No equipment matches your current filter.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <AnimatePresence mode="wait">
+                {filteredEquipment.map((item, index) => (
                 <motion.div
                   key={item.id}
                   layout
@@ -454,9 +310,10 @@ const Equipment = () => {
                     </div>
                   </div>
                 </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
         </div>
       </section>
 

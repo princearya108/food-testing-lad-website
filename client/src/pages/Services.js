@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import SampleAdvisor from '../components/AIRecommendations/SampleAdvisor';
 import { 
   FaFlask, 
   FaMicroscope, 
@@ -35,6 +36,10 @@ const Services = () => {
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [selectedService, setSelectedService] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // AI Advisor states
+  const [showAIAdvisor, setShowAIAdvisor] = useState(false);
+  const [productInfo, setProductInfo] = useState(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -342,7 +347,7 @@ const Services = () => {
             <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
               Comprehensive analytical testing services with state-of-the-art equipment and expert professionals
             </p>
-            <div className="flex justify-center items-center space-x-8">
+            <div className="flex justify-center items-center space-x-8 mb-8">
               <div className="flex items-center space-x-2">
                 <FaCheckCircle className="h-6 w-6 text-green-400" />
                 <span className="text-sm font-medium">NABL Accredited</span>
@@ -355,6 +360,35 @@ const Services = () => {
                 <FaCheckCircle className="h-6 w-6 text-blue-400" />
                 <span className="text-sm font-medium">Expert Team</span>
               </div>
+            </div>
+            
+            {/* AI Advisor CTA */}
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={() => {
+                  // Set sample product info for demo
+                  setProductInfo({
+                    productType: 'food',
+                    intendedUse: 'commercial',
+                    targetMarket: ['domestic'],
+                    shelfLife: 6,
+                    processingMethod: 'processed',
+                    budget: 'moderate',
+                    urgency: 'week'
+                  });
+                  setShowAIAdvisor(true);
+                }}
+                className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-3"
+              >
+                <FaDesktop className="w-5 h-5" />
+                <span>Get AI Testing Recommendations</span>
+              </button>
+              <button
+                onClick={() => setShowQuoteModal(true)}
+                className="bg-white bg-opacity-20 text-white border-2 border-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+              >
+                Request Quote
+              </button>
             </div>
           </motion.div>
         </div>
@@ -789,6 +823,13 @@ const Services = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* AI Sample Advisor */}
+      <SampleAdvisor
+        productInfo={productInfo}
+        isOpen={showAIAdvisor}
+        onClose={() => setShowAIAdvisor(false)}
+      />
     </div>
   );
 };

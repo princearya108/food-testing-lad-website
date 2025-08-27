@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import axios from 'axios';
+import BlogContent from '../components/BlogContent';
 import { 
   FaCalendar, 
   FaUser, 
@@ -191,7 +192,7 @@ const Blog = () => {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="prose prose-lg prose-blue max-w-none"
             >
-              <div dangerouslySetInnerHTML={{ __html: currentBlog.content }} />
+              <BlogContent content={currentBlog.content} />
             </motion.div>
 
             {/* Tags */}

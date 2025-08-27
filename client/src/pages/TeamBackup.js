@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FaEnvelope, FaFlask, FaMicroscope } from 'react-icons/fa';
-import api, { API_BASE_URL } from '../api/config';
 
 const Team = () => {
-  const [teamMembers, setTeamMembers] = useState([]);
-  const [boardMembers, setBoardMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Fallback hardcoded team data
-  const fallbackBoardMembers = [
+  // Simple hardcoded team data that WILL work
+  const boardMembers = [
     {
       _id: '1',
       name: 'Dr. Preetha Bhadra',
@@ -48,7 +44,7 @@ const Team = () => {
     }
   ];
 
-  const fallbackTeamMembers = [
+  const teamMembers = [
     {
       _id: '4',
       name: 'Dr. Bhadram Kalyan Chekraverthy',
@@ -94,66 +90,10 @@ const Team = () => {
       education: 'M.Sc. Chemistry',
       experience: '4+ years in research',
       specialization: 'Research Analytics, Method Development',
-            bio: 'Research analyst specializing in analytical method development.',
+      bio: 'Research analyst specializing in analytical method development.',
       isActive: true
     }
-   ];
-
-  // Fetch team data from API
-  useEffect(() => {
-    const fetchTeamData = async () => {
-      try {
-        setLoading(true);
-        console.log('Fetching team data from API...');
-        const response = await api.get('/api/team');
-        
-        if (response.data.success) {
-          const allMembers = response.data.data;
-          console.log('API Response - Total members:', allMembers.length);
-          
-          // Separate board members (Management) and technical team
-          const board = allMembers.filter(member => 
-            member.department === 'Management' && member.isActive
-          ).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-          
-          const technical = allMembers.filter(member => 
-            member.department !== 'Management' && member.isActive
-          ).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-          
-          console.log('Board members:', board.length);
-          console.log('Technical members:', technical.length);
-          
-          setBoardMembers(board.length > 0 ? board : fallbackBoardMembers);
-          setTeamMembers(technical.length > 0 ? technical : fallbackTeamMembers);
-          setError(null);
-        } else {
-          throw new Error('API returned success: false');
-        }
-      } catch (err) {
-        console.error('API Error:', err.message);
-        console.log('Using fallback data...');
-        setError('Using cached data - admin changes may not reflect immediately');
-        setBoardMembers(fallbackBoardMembers);
-        setTeamMembers(fallbackTeamMembers);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTeamData();
-  }, []);
-
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-16 flex items-center justify-center">
-        <div className="text-center">
-          <FaFlask className="h-12 w-12 animate-pulse text-blue-600 mx-auto mb-4" />
-          <p className="text-lg text-gray-600">Loading team information...</p>
-        </div>
-      </div>
-    );
-  }
+  ];
 
   return (
     <div className="min-h-screen pt-16">
@@ -165,13 +105,8 @@ const Team = () => {
               Our <span className="text-blue-200">Team</span>
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
-              Meet our dedicated team of {teamMembers.length + boardMembers.length} experts committed to delivering excellence in analytical testing
+              Meet our dedicated team of experts committed to delivering excellence in analytical testing
             </p>
-            {error && (
-              <div className="bg-yellow-500 bg-opacity-20 border border-yellow-400 rounded-lg p-3 text-yellow-100 text-sm max-w-md mx-auto">
-                ⚠️ {error}
-              </div>
-            )}
             <div className="flex justify-center items-center space-x-8">
               <div className="flex items-center space-x-2">
                 <FaFlask className="h-6 w-6 text-green-400" />
@@ -201,29 +136,15 @@ const Team = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {boardMembers.map((member, index) => (
               <div key={member._id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300">
-                                 <div className={`h-32 bg-gradient-to-r ${index % 3 === 0 ? 'from-blue-500 to-blue-600' : index % 3 === 1 ? 'from-green-500 to-green-600' : 'from-purple-500 to-purple-600'}`}>
-                   <div className="flex items-center justify-center h-full">
-                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                       {member.profileImage ? (
-                         <img 
-                           src={`${API_BASE_URL}${member.profileImage}`} 
-                           alt={member.name}
-                           className="w-full h-full object-cover"
-                           onError={(e) => {
-                             e.target.style.display = 'none';
-                             e.target.nextSibling.style.display = 'flex';
-                           }}
-                         />
-                       ) : null}
-                       <span 
-                         className="text-2xl font-bold text-gray-700 flex items-center justify-center w-full h-full"
-                         style={{display: member.profileImage ? 'none' : 'flex'}}
-                       >
-                         {member.name.split(' ').map(n => n[0]).join('')}
-                       </span>
-                     </div>
-                   </div>
-                 </div>
+                <div className={`h-32 bg-gradient-to-r ${index % 3 === 0 ? 'from-blue-500 to-blue-600' : index % 3 === 1 ? 'from-green-500 to-green-600' : 'from-purple-500 to-purple-600'}`}>
+                  <div className="flex items-center justify-center h-full">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                      <span className="text-2xl font-bold text-gray-700">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
                   <p className="text-blue-600 font-semibold mb-4">{member.position}</p>
@@ -275,29 +196,15 @@ const Team = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {teamMembers.map((member, index) => (
               <div key={member._id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100">
-                                 <div className={`h-24 bg-gradient-to-r ${member.department === 'Chemical' ? 'from-blue-400 to-blue-500' : 'from-green-400 to-green-500'}`}>
-                   <div className="flex items-center justify-center h-full">
-                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center overflow-hidden">
-                       {member.profileImage ? (
-                         <img 
-                           src={`${API_BASE_URL}${member.profileImage}`} 
-                           alt={member.name}
-                           className="w-full h-full object-cover"
-                           onError={(e) => {
-                             e.target.style.display = 'none';
-                             e.target.nextSibling.style.display = 'flex';
-                           }}
-                         />
-                       ) : null}
-                       <span 
-                         className="text-lg font-bold text-gray-700 flex items-center justify-center w-full h-full"
-                         style={{display: member.profileImage ? 'none' : 'flex'}}
-                       >
-                         {member.name.split(' ').map(n => n[0]).join('')}
-                       </span>
-                     </div>
-                   </div>
-                 </div>
+                <div className={`h-24 bg-gradient-to-r ${member.department === 'Chemical' ? 'from-blue-400 to-blue-500' : 'from-green-400 to-green-500'}`}>
+                  <div className="flex items-center justify-center h-full">
+                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                      <span className="text-lg font-bold text-gray-700">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
                 <div className="p-4">
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{member.name}</h3>
                   <p className="text-blue-600 font-semibold text-sm mb-2">{member.position}</p>

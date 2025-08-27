@@ -17,6 +17,7 @@ import Internship from './pages/Internship';
 import Contact from './pages/Contact';
 
 import Blog from './pages/Blog';
+import StaticPage from './pages/StaticPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 
@@ -39,6 +40,13 @@ const AppContent = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<Blog />} />
+          
+          {/* Static Pages */}
+          <Route path="/privacy-policy" element={<StaticPage />} />
+          <Route path="/terms-of-service" element={<StaticPage />} />
+          <Route path="/sitemap" element={<StaticPage />} />
+          <Route path="/page/:slug" element={<StaticPage />} />
+          
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={
             <ProtectedRoute>

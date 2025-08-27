@@ -140,9 +140,9 @@ const Footer = () => {
               <p>&copy; 2024 Gram Tarang Food Testing Lab. All rights reserved.</p>
             </div>
             <div className="flex space-x-6">
-              <a href="#" className="hover:text-white transition-colors duration-200">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors duration-200">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-colors duration-200">Sitemap</a>
+              <Link to="/privacy-policy" className="hover:text-white transition-colors duration-200">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="hover:text-white transition-colors duration-200">Terms of Service</Link>
+              <Link to="/sitemap" className="hover:text-white transition-colors duration-200">Sitemap</Link>
             </div>
           </div>
         </div>
